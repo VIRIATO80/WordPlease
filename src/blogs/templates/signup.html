@@ -1,0 +1,21 @@
+{% extends "base.html"  %}
+
+{% block head_title %}
+    Registro
+{% endblock %}
+{% block content %}
+    <h1>Nuevo registro en WordPlease</h1>
+    <h3>La plataforma líder en microblogging</h3>
+    {%  if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger">
+            {{message}}
+        </div>
+        {% endfor %}
+    {% endif %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Registrarse</button>
+    </form>
+{% endblock %}
