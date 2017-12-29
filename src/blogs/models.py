@@ -14,27 +14,16 @@ class Category(models.Model):
         return self.name
 
 
-class BlogPersonal(models.Model):
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    created_at = models.DateTimeField(auto_now_add=True)  # Fecha de creación del registro
-    modified_at = models.DateTimeField(auto_now=True)  # Graba la fecha de la última modificación
-
-    def __str__(self):
-        """
-        :return: La representación de un objeto como un string
-        """
-        return self.nombre_usuario
-
-
 class Post(models.Model):
 
-    blog = models.ForeignKey(BlogPersonal, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=150)
     intro = models.CharField(max_length=350)
     body = models.TextField()
-    image = models.FileField()
-    publish_date = models.DateTimeField()
+    image = models.FileField(null=True, blank=True)
+    publish_date = models.DateField()
     categories = models.ManyToManyField(Category)
+
+    created_at = models.DateTimeField(auto_now_add=True)  # Fecha de creación del registro
+    modified_at = models.DateTimeField(auto_now=True)  # Graba la fecha de la última modificación
