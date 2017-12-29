@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block head_title %} Listado de Blogs {% endblock %}
+{% block content %}
+    <h1>Blogs publicados</h1>
+    <ul>
+    {% for blog in blogs %}
+       <li>
+        <a href="/blogs/{{blog.username}}">El blog de {{blog.first_name}} {{blog.last_name}}</a>
+       </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
