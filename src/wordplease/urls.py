@@ -32,7 +32,7 @@ urlpatterns = [
     path('new-post/', CreatePostView.as_view(), name="create_post_page"),
     path('blogs/', blogs_list, name="blogs_list__page"),
     path('blogs/<nombre_usuario>', user_posts_list, name="posts_user_page"),
-    path('blogs/<post_id>', PostDetailView.as_view(), name="post_detail_page"),
+    path('posts/<int:pk>', PostDetailView.as_view(), name="post_detail_page"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

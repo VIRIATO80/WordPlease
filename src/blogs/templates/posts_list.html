@@ -1,5 +1,39 @@
 {% for post in posts %}
-    <a href="#" title="{{post.title}}" >
-        <img src="/media/{{post.image}}" alt="{{post.title}}" height="120px" >
-    </a>
+    <div class="row">
+        <article class="content">
+            <div class="col-sm-5">
+                <a href="{% url "post_detail_page" post.pk %}">
+                    <img src="/media/{{post.image}}" alt="{{post.title}}" height="200px" >
+                </a>
+            </div>
+            <div class="col-sm-7">
+                <header>
+                    <a href="{% url "post_detail_page" post.pk %}">
+                        <h3 class="title">{{post.title}}</h3>
+                    </a>
+                </header>
+                <aside class="list-group-item row">
+                    <div class="col-sm-3 col-xs-3">
+                        <div class="text-center" >
+                            <small>by <a href="{% url "posts_user_page" post.user.username %}">{{post.user.username}}</a></small>
+                        </div>
+                    </div>
+                    <div class="col-sm-9 col-xs-9">
+                        <small>
+                            <i class="glyphicon glyphicon-time"></i>&nbsp;<time data-time="{{post.publish_date}}" >{{post.publish_date}}</time>
+                            <br>
+                            {% for cat in post.categories.all %}
+                                <button type="button" class="btn btn-success">{{cat.name}}</button>&nbsp;
+                            {% endfor %}
+                            <br>
+                        </small>
+                    </div>
+                </aside>
+                <section>
+                    <p>{{post.intro}}</p>
+                </section>
+            </div>
+        </article>
+    </div>
+    <hr class="hrStyle">
 {% endfor %}

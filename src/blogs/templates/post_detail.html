@@ -1,10 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block head_title %} {{object.title}} {% endblock %}
+{% block content %}
+<article id="detalle" class="content" >
+     <div class="well">
+        <div align="center" class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-sm-5" >
+                <img src="/media/{{post.image}}" alt="{{object.title}}" height="300px" >
+            </div>
+            <div class="col-md-7" >
+                <blockquote><h3>{{object.intro}}</h3></blockquote>
+            </div>
+        </div>
+        <div>
+            <header class="text-center">
+                {{object.title}}
+            </header>
+            <aside>
+                <p>
+                    <small>
+                        <i class="glyphicon glyphicon-time"></i>&nbsp;{{object.publish_date}}
+                        <button data-id="2" class="btn btn-xs btn-primary">Me gusta</button>
+                    </small>
+                </p>
+            </aside>
+            <br>
+           <section>
+               {{object.body}}
+           </section>
+           <section>
+               {% for cat in object.categories.all %}
+                    <button type="button" class="btn btn-success">{{cat.name}}</button>&nbsp;
+               {% endfor %}
+           </section>
+        </div>
+    </div>
+</article>
+{% endblock %}

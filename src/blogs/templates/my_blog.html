@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block head_title %} EL blog de {{owner}} {% endblock %}
+{% block content %}
+    <h1>El blog de {{owner}}</h1>
+    <h4>Last entries</h4>
+    {% include "posts_list.html" %}
+{% endblock %}

@@ -1,6 +1,8 @@
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from datetime import datetime
+
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.views import View
@@ -12,16 +14,17 @@ from blogs.models import Post
 
 
 def home(request):
-    all_post = Post.objects.all().order_by("-publish_date")
+    now = datetime.now()
+    all_post = Post.objects.filter(publish_date__lte=now).order_by("-publish_date")
     context = {'posts': all_post}
     return render(request, "home.html", context)
 
 
 def user_posts_list(request, nombre_usuario):
-    posts_list = Post.objects.filter(user__username=nombre_usuario).order_by("-publish_date")
-    # posts_list = Post.objects.get(user.username=nombre_usuario).order_by("-publish_date")
-    context = {'posts': posts_list}
-    return render(request, "home.html", context)
+    now = datetime.now()
+    posts_list = Post.objects.filter(user__username=nombre_usuario, publish_date__lte=now).order_by("-publish_date")
+    context = {'posts': posts_list, 'owner': nombre_usuario}
+    return render(request, "my_blog.html", context)
 
 
 def blogs_list(request):
@@ -68,15 +71,19 @@ class CreatePostView(LoginRequiredMixin, View):
 class PostDetailView(DetailView):
 
     model = Post
+    template_name = 'post_detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
-    def detail_view(request, pk):
+    def get_queryset(self):
+        query = super(PostDetailView, self).get_queryset()
+        now = datetime.now()
+        return query.filter(publish_date__lte=now)
+
+    def get(self, request, *args, **kwargs):
         try:
-            post_id = Post.objects.get(pk=pk)
-        except Post.DoesNotExist:
-            raise Http404("Book does not exist")
-
-        return render(request, 'post_detail.html', context={'post': post_id, })
+            self.object = self.get_object()
+        except Http404:
+            # redirect here
+            return render(request,"404.html")
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
