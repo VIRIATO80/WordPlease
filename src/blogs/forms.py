@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.forms import ModelForm, Textarea, DateTimeInput
+from django.forms import ModelForm, Textarea, DateTimeInput, SelectMultiple, TextInput
 
 from blogs.models import Post
 
@@ -24,6 +24,9 @@ class PostForm(ModelForm):
         model = Post
         fields = "__all__"
         exclude = ['user']
-        widgets = {"intro": Textarea(attrs={'cols': 40, 'rows': 5}),
-                   'publish_date': DateTimeInput(attrs={'class': 'datepicker'})
+        widgets = {"title": TextInput(attrs={'rows': 3, 'class': 'form-control'}),
+                   "intro": Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+                   "body": Textarea(attrs={'rows': 10, 'class': 'form-control'}),
+                   'publish_date': DateTimeInput(attrs={'class': 'datepicker'}),
+                   'categories': SelectMultiple(attrs={'class': 'form-control'})
                    }

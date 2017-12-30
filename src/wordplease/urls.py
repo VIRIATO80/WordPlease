@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from blogs.views import SignUpView, PostDetailView, home, CreatePostView, user_posts_list, blogs_list
+from blogs.views import SignUpView, PostDetailView, home, CreatePostView, user_posts_list, blogs_list, search_categories
 from users.views import logout, LoginView
 
 urlpatterns = [
@@ -27,6 +27,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name="login_page"),
     path('logout/', logout, name="logout_page"),
     path('signup/', SignUpView.as_view(), name="signup_page"),
+    path('search/', search_categories),
 
     path('', home, name="home_page"),
     path('new-post/', CreatePostView.as_view(), name="create_post_page"),

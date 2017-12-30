@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from datetime import datetime
 
+from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.views import View
@@ -10,7 +11,7 @@ from django.views.generic import DetailView
 
 from blogs.forms import SignUpForm, PostForm
 
-from blogs.models import Post
+from blogs.models import Post, Category
 
 
 def home(request):
@@ -22,14 +23,37 @@ def home(request):
 
 def user_posts_list(request, nombre_usuario):
     now = datetime.now()
+    #  Categorias para el filtro
+    categories = Category.objects.all().order_by("name")
     posts_list = Post.objects.filter(user__username=nombre_usuario, publish_date__lte=now).order_by("-publish_date")
-    context = {'posts': posts_list, 'owner': nombre_usuario}
+    paginator = Paginator(posts_list, 5)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+    context = {'posts': posts, 'owner': nombre_usuario, 'categories': categories}
     return render(request, "my_blog.html", context)
 
 
 def blogs_list(request):
-    all_blogs = User.objects.all().order_by("username")
+    all_blogs = User.objects.filter().order_by("username")
     return render(request, "blogs_list.html", {"blogs": all_blogs})
+
+
+def search_categories(request):
+    now = datetime.now()
+    #  Categorias para el filtro
+    categories = Category.objects.all().order_by("name")
+    username = request.GET.get('owner')
+    idcat = request.POST.get('categoria')
+    if idcat == '0':
+        posts_list = Post.objects.filter(user__username=username, publish_date__lte=now).order_by("-publish_date")
+    else:
+        posts_list = Post.objects.filter(categories__in=[idcat], user__username=username,
+                                         publish_date__lte=now).order_by("-publish_date")
+    paginator = Paginator(posts_list, 5)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+    context = {'posts': posts, 'owner': username, 'categories': categories}
+    return render(request, "my_blog.html", context)
 
 
 class SignUpView(View):
@@ -63,7 +87,7 @@ class CreatePostView(LoginRequiredMixin, View):
         post.user = request.user  # Asignamos el usuario autenticado
         form = PostForm(request.POST,  request.FILES, instance=post)
         if form.is_valid():
-            post = form.save()
+            form.save()
             return redirect("home_page")
         return render(request, "create_post_form.html", {"form": form})
 
@@ -72,7 +96,6 @@ class PostDetailView(DetailView):
 
     model = Post
     template_name = 'post_detail.html'
-
 
     def get_queryset(self):
         query = super(PostDetailView, self).get_queryset()
