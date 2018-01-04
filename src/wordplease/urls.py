@@ -14,12 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.routers import SimpleRouter
 
 from blogs.views import SignUpView, PostDetailView, home, CreatePostView, user_posts_list, blogs_list, search_categories
+from users.api import UsersViewSet
 from users.views import logout, LoginView
+
+router = SimpleRouter()
+router.register('users', UsersViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,5 +40,7 @@ urlpatterns = [
     path('blogs/<nombre_usuario>', user_posts_list, name="posts_user_page"),
     path('posts/<int:pk>', PostDetailView.as_view(), name="post_detail_page"),
 
+    # API de usuarios
+    path('api/1.0/', include(router.urls))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
