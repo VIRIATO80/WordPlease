@@ -19,12 +19,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import SimpleRouter
 
+from blogs.api import BlogsViewSet, MyBlogViewSet
 from blogs.views import SignUpView, PostDetailView, home, CreatePostView, user_posts_list, blogs_list, search_categories
 from users.api import UsersViewSet
 from users.views import logout, LoginView
 
 router = SimpleRouter()
 router.register('users', UsersViewSet)
+router.register('blogs/detail', MyBlogViewSet)
+router.register('blogs', BlogsViewSet)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Textarea, DateTimeInput, SelectMultiple, TextInput
 
-from blogs.models import Post
+from blogs.models import Post, Blog
 
 
 class SignUpForm(UserCreationForm):
@@ -16,6 +16,12 @@ class SignUpForm(UserCreationForm):
         self.fields['username'].help_text = ''
         self.fields['password1'].help_text = ''
         del self.fields['password2']
+
+
+class BlogForm(ModelForm):
+    class Meta:
+        model = Blog
+        fields = ('blog_name', 'blog_description')
 
 
 class PostForm(ModelForm):

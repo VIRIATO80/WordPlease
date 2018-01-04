@@ -1,17 +1,17 @@
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import DetailView
 
-from blogs.forms import SignUpForm, PostForm
+from blogs.forms import SignUpForm, PostForm, BlogForm
 
-from blogs.models import Post, Category
+from blogs.models import Post, Category, Blog
 
 
 def home(request):
@@ -26,15 +26,20 @@ def user_posts_list(request, nombre_usuario):
     #  Categorias para el filtro
     categories = Category.objects.all().order_by("name")
     posts_list = Post.objects.filter(user__username=nombre_usuario, publish_date__lte=now).order_by("-publish_date")
+    # Información para la cabecera del blog
+    try:
+        blog_info = Blog.objects.get(user__username=nombre_usuario)
+    except:
+        return render(request, "404.html")
     paginator = Paginator(posts_list, 5)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
-    context = {'posts': posts, 'owner': nombre_usuario, 'categories': categories}
+    context = {'posts': posts, 'blog': blog_info, 'categories': categories, 'owner': nombre_usuario}
     return render(request, "my_blog.html", context)
 
 
 def blogs_list(request):
-    all_blogs = User.objects.filter().order_by("username")
+    all_blogs = Blog.objects.filter().order_by("blog_name")
     return render(request, "blogs_list.html", {"blogs": all_blogs})
 
 
@@ -59,19 +64,23 @@ def search_categories(request):
 class SignUpView(View):
 
     def get(self, request):
-        form = SignUpForm()
-        return render(request, "signup.html", {"form": form})
+        formUser = SignUpForm()
+        formBlog = BlogForm()
+        return render(request, "signup.html", {"formUser": formUser, "formBlog": formBlog})
 
     def post(self, request):
-        form = SignUpForm(request.POST)
-        if form.is_valid():
+        user_form = SignUpForm(request.POST)
+        blog_form = BlogForm(request.POST)
+        if user_form.is_valid() and blog_form.is_valid():
             # Grabamos el usuario desde el formulario
-            user = form.save()
+            user = user_form.save()
+            user.blog.blog_name = blog_form.instance.blog_name
+            user.blog.blog_description = blog_form.instance.blog_description
             user.save()
             #  Autenticamos directamente al nuevo usuario
             login(request, user)
             return redirect("home_page")
-        return render(request, "signup.html", {"form": form})
+        return render(request, "signup.html", {"formUser": user_form, "formBlog": blog_form})
 
 
 class CreatePostView(LoginRequiredMixin, View):
