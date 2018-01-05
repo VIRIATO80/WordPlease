@@ -17,8 +17,22 @@ class BlogSerializer(serializers.ModelSerializer):
         fields = ['id', 'blog_name', 'blog_description', 'owner', 'url']
 
 
-class MyBlogSerializer(serializers.ModelSerializer):
+class BlogDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
         fields = ['title', 'intro', 'image', 'publish_date']
+
+
+class PostCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'intro', 'publish_date', 'body']
+
+
+class PostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = '__all__'

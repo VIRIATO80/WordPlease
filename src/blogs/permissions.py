@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework.permissions import BasePermission
 
 
@@ -9,10 +11,30 @@ class BlogPermissions(BasePermission):
         return False
 
 
-class MyBlogPermissions(BasePermission):
+class BlogDetailPermissions(BasePermission):
 
     def has_permission(self, request, view):
-        if request.method == 'GET':
+        if request.method == 'GET' and view.action == 'retrieve':
+            return True
+        if request.method == 'POST' and request.user.is_authenticated:
             return True
         return False
 
+class PostPermissions(BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method == 'GET' and view.action == 'retrieve':
+            return True
+        if request.method == 'POST' and request.user.is_authenticated:
+            return True
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        # Si soy administrador o pido los datos de mi propio post, entonces puedo verlos
+        if request.user == obj or request.user.is_superuser:
+            return True
+        else:
+            now = datetime.now()
+            if now.date() > obj.publish_date:
+                return True
+        return False
