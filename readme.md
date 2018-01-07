@@ -11,7 +11,7 @@
 * /api/1.0/users/ - List of users. Only for administrators
 
 
-##User Detail, Update and Destroy
+## User Detail, Update and Destroy
 * /api/1.0/users/**id**/ - Detail of user. Only for administrators or own user. Support *GET, PUT and 
 DELETE*
 
