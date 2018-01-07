@@ -2,7 +2,6 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import redirect, render

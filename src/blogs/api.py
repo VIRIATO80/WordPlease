@@ -60,3 +60,12 @@ class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [PostPermissions]
+
+    def update(self, request, pk=None):
+        post = self.get_object()
+        serializer = PostCreateSerializer(data=request.data, instance=post)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

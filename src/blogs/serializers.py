@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from blogs.models import Blog, Post
+from blogs.models import Blog, Post, Category
 
 
 class BlogSerializer(serializers.ModelSerializer):
@@ -10,7 +10,7 @@ class BlogSerializer(serializers.ModelSerializer):
 
     def create_url(self, blog):
         request = self.context.get('request')
-        return request.build_absolute_uri('detail/'+str(blog.user.id))
+        return request.build_absolute_uri('detail/'+str(blog.user.id)+'/')
 
     class Meta:
         model = Blog
@@ -24,6 +24,13 @@ class BlogDetailSerializer(serializers.ModelSerializer):
         fields = ['title', 'intro', 'image', 'publish_date']
 
 
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = ('name', 'description')
+
+
 class PostCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -32,6 +39,8 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+
+    categories = CategorySerializer(many=True)
 
     class Meta:
         model = Post

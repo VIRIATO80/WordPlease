@@ -42,6 +42,3 @@ class Post(models.Model):
     image = models.FileField(null=True, blank=True)
     publish_date = models.DateField()
     categories = models.ManyToManyField(Category)
-
-    created_at = models.DateTimeField(auto_now_add=True)  # Fecha de creación del registro
-    modified_at = models.DateTimeField(auto_now=True)  # Graba la fecha de la última modificación

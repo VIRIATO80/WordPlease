@@ -24,6 +24,7 @@ from blogs.views import SignUpView, PostDetailView, home, CreatePostView, user_p
 from users.api import UsersViewSet
 from users.views import logout, LoginView
 
+#  Router for the API
 router = SimpleRouter()
 router.register('users', UsersViewSet)
 router.register('blogs/detail', BlogDetailViewSet)

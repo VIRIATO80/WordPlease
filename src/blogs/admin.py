@@ -8,12 +8,11 @@ admin.site.register(Category)
 
 
 @admin.register(Post)
-class MovieAdmin(admin.ModelAdmin):
+class BlogAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'image', 'intro', 'publish_date')
     list_filter = ('categories',)
     search_fields = ('title',)
-    readonly_fields = ('created_at', 'modified_at')
     fieldsets = (
         ('General Data', {
             'fields': ('title', 'intro', 'body')
@@ -23,10 +22,5 @@ class MovieAdmin(admin.ModelAdmin):
         }),
         ('Additional Info', {
             'fields': ('user', 'image'),
-        }),
-        ('Created & Modified', {
-            'fields': ('created_at', 'modified_at'),
-            'classes': ('collapse',),
-            'description': 'These fields are auto-generated'
         }),
     )
